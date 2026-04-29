@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Neon Clock</title>
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: monospace;
+        color: #00ff99;
+        background: black;
+    }
+
+    /* Star background */
+    .stars {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        z-index: -1;
+    }
+
+    .stars::before, .stars::after {
+        content: "";
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background-image: radial-gradient(white 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: moveStars 100s linear infinite;
+        opacity: 0.6;
+    }
+
+    .stars::after {
+        background-size: 100px 100px;
+        animation-duration: 160s;
+        opacity: 0.3;
+    }
+
+    @keyframes moveStars {
+        from { transform: translate(0, 0); }
+        to { transform: translate(-500px, -500px); }
+    }
+
+    /* Digital clock */
+    #digital {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        text-shadow: 0 0 10px #00ff99, 0 0 20px #00ff99;
+    }
+
+    /* Analog clock */
+    .clock {
+        width: 250px;
+        height: 250px;
+        border: 5px solid #00ff99;
+        border-radius: 50%;
+        position: relative;
+        box-shadow: 0 0 20px #00ff99, inset 0 0 20px #00ff99;
+        backdrop-filter: blur(2px);
+    }
+
+    .hand {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform-origin: bottom;
+        transform: translateX(-50%) rotate(0deg);
+        background: #00ff99;
+        box-shadow: 0 0 10px #00ff99;
+    }
+
+    .hour {
+        width: 6px;
+        height: 60px;
+    }
+
+    .minute {
+        width: 4px;
+        height: 90px;
+    }
+
+    .second {
+        width: 2px;
+        height: 110px;
+        background: #00ffaa;
+    }
+
+    .center {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #00ff99;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 10px #00ff99;
+    }
+</style>
+</head>
+<body>
+
+<div class="stars"></div>
+
+<div id="digital">00:00:00</div>
+
+<div class="clock">
+    <div class="hand hour" id="hour"></div>
+    <div class="hand minute" id="minute"></div>
+    <div class="hand second" id="second"></div>
+    <div class="center"></div>
+</div>
+
+<script>
+function updateClock() {
+    const now = new Date();
+
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    // Digital display
+    document.getElementById("digital").textContent =
+        String(hours).padStart(2, '0') + ":" +
+        String(minutes).padStart(2, '0') + ":" +
+        String(seconds).padStart(2, '0');
+
+    // Analog rotation
+    const hourDeg = (hours % 12) * 30 + minutes * 0.5;
+    const minuteDeg = minutes * 6;
+    const secondDeg = seconds * 6;
+
+    document.getElementById("hour").style.transform =
+        `translateX(-50%) rotate(${hourDeg}deg)`;
+
+    document.getElementById("minute").style.transform =
+        `translateX(-50%) rotate(${minuteDeg}deg)`;
+
+    document.getElementById("second").style.transform =
+        `translateX(-50%) rotate(${secondDeg}deg)`;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+
+</body>
+</html>
